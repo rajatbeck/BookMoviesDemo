@@ -11,15 +11,26 @@ import {initializeListeners} from 'react-navigation-redux-helpers';
 import {navigationPropConstructor} from '../utils/redux';
 import Events from "../components/Events";
 import EventDetails from "../components/EventDetails";
+import {FluidNavigator} from "../react_navigation_fluid";
+import createFluidNavigator from "../react_navigation_fluid/src/createFluidNavigator";
 
 
-export const AppNavigator = createStackNavigator({
+
+export const AppNavigator = createFluidNavigator({
     Events: {
         screen: Events
     },
     EventDetails: {
-        screen: EventDetails
-    }
+        screen: EventDetails,
+
+    },
+
+},{
+    mode: 'card',
+    navigationOptions: {
+        gesturesEnabled: true,
+
+    },
 });
 
 
