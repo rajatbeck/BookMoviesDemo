@@ -35,7 +35,7 @@ class EventsScreen extends Component {
         return (
             <View style={styles.container}>
                 <Transition shared={`image${this.props.navigation.state.params.id}`}>
-                    <Image source={Images.ic_first} style={{width}}/>
+                    <Image source={Images.ic_first}/>
                 </Transition>
             </View>
         )

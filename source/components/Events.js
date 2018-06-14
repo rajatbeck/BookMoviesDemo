@@ -92,26 +92,47 @@ class EventsScreen extends Component {
             <View style={styles.container}>
 
 
-                <View style={{backgroundColor: Colors.white, flexDirection: 'row', marginTop: 20, height: 50}}>
-                    <Image
-                        source={Images.ic_back_arrow}
-                        style={{width: 24,
-                            height: 24,
-                            marginLeft: 8,
-                            alignItems:'center',
-                            alignSelf:'center'}}
-                    />
-                    <Transition appear="horizontal">
-                        <Text style={{
-                            fontWeight: 'normal',
-                            flexDirection: 'row',
-                            fontSize: 16,
-                            paddingHorizontal: 8,
-                            alignSelf: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}>Events</Text>
-                    </Transition>
+                <View style={{
+                    backgroundColor: Colors.white,
+                    flexDirection: 'row',
+                    marginTop: 20,
+                    height: 50,
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <View style={{flexDirection: 'row'}}>
+                        <Image
+                            source={Images.ic_back_arrow}
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginLeft: 8,
+                                alignItems: 'center',
+                                alignSelf: 'center'
+                            }}
+                        />
+                        <Transition appear="horizontal">
+                            <Text style={{
+                                fontWeight: 'normal',
+                                flexDirection: 'row',
+                                fontSize: 16,
+                                paddingHorizontal: 8,
+                                alignSelf: 'center',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}>Events</Text>
+                        </Transition>
+
+                    </View>
+
+                    <Image source={Images.ic_search_icon}
+                           style={{
+                               width: 24,
+                               height: 24,
+                               marginRight: 8,
+                               alignItems: 'center',
+                               alignSelf: 'center'
+                           }}/>
                 </View>
 
                 <Carousel
