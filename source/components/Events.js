@@ -1,31 +1,84 @@
 /**
  * Created by rajatmareclbeck on 14/06/18.
  */
-/**
- * Created by rajatmareclbeck on 14/06/18.
- */
 import React, {Component} from 'react';
 import {
     View,
     StyleSheet,
-    TouchableOpacity, Text
+    TouchableOpacity,
+    Text,
+    Image,
+    FlatList,
+    Dimensions
 } from "react-native";
-import { NavigationActions } from "react-navigation";
+import {NavigationActions} from "react-navigation";
+import Images from "../assets/images";
+import Colors from "../assets/Colors";
+import {connect} from "react-redux";
+import Carousel from "react-native-snap-carousel";
+import {stackAnimatedStyles, stackScrollInterpolator} from "../utils/animations";
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
+const itemWidth = width - 100;
+const maxHeight = height - 16 -8 - 50 -20 -50-50;
 
 
-class Events extends Component {
+class LogoTitle extends React.Component {
+    render() {
+        return (
+            <View style={{backgroundColor: Colors.white, flexDirection: 'row'}}>
+                <Image
+                    source={Images.ic_back_arrow}
+                    style={{width: 24, height: 24,marginLeft:8}}
+                />
+                <Text style={{
+                    fontWeight: 'normal',
+                    flexDirection: 'row',
+                    fontSize: 16,
+                    paddingHorizontal: 8,
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>Events</Text>
+            </View>
+        );
+    }
+}
+
+class EventsScreen extends Component {
 
 
-    static NavigationOptions = () => ({
-        title: 'Events',
+    static navigationOptions = () => ({
+        title: '',
+        headerStyle: {
+            backgroundColor: Colors.white,
+            borderBottomColor: Colors.white,
+        },
+        headerTintColor: Colors.black,
+        headerTitleStyle: {
+            fontWeight: 'normal',
+            flexDirection: 'row',
+
+        },
+        headerLeft: <LogoTitle/>,
+        headerRight: (<Image source={Images.ic_search_icon} style={{width: 24, height: 24,marginRight:8}}/>)
+
+
     });
+
+
 
     constructor(props: Props) {
         super(props);
     }
 
+
+    componentDidMount() {
+        console.log(this.props.event)
+    }
+
     _navigate = () => {
-       const navigateToNext =  NavigationActions.navigate({
+        const navigateToNext = NavigationActions.navigate({
             routeName: "EventDetails",
 
         });
@@ -35,10 +88,127 @@ class Events extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={this._navigate}>
-                    <Text>Press Me</Text>
+                <Carousel
+                    ref={ref => this.headerCarousel = ref}
+                    containerCustomStyle={{maxHeight: 60, marginBottom: 16, marginTop: 8}}
+                    vertical={true}
+                    data={this.props.event}
+                    itemHeight={100}
+                    sliderHeight={100}
+                    inactiveSlideOpacity={1}
+                    inactiveSlideScale={1}
+                    scrollEnabled={false}
+                    activeAnimationType={'decay'}
+                    renderItem={(item) => {
+                        return (
+                            <View>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    paddingHorizontal: 16
+                                }}>
+                                    <Text style={{
+                                        fontSize: 20,
+                                        fontWeight: 'bold',
 
-                </TouchableOpacity>
+                                    }}>{item.item.event_name}</Text>
+                                    <Text style={{
+                                        color: Colors.textSubTitle,
+                                        fontWeight: 'bold',
+                                        fontSize: 12
+                                    }}>{item.item.event_date}</Text>
+                                </View>
+                                <View style={{flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 12}}>
+                                    <Image source={Images.ic_location}
+                                           style={{width: 16, height: 16, tintColor: Colors.textSubTitle}}/>
+                                    <Text style={{
+                                        color: Colors.textSubTitle,
+                                        paddingHorizontal: 4,
+                                        fontWeight: 'bold',
+                                        paddingBottom: 2,
+                                        fontSize: 12,
+                                    }}>{item.item.event_location}</Text>
+                                </View>
+
+
+                            </View>
+                        )
+                    }}
+                />
+                <Carousel
+                    containerCustomStyle={{maxHeight}}
+                    // scrollInterpolator={stackScrollInterpolator}
+                    // slideInterpolatedStyle={stackAnimatedStyles}
+                    useScrollView={true}
+                    layout={'stack'}
+                    onSnapToItem={(slideIndex) => {
+                        this.headerCarousel.snapToItem(slideIndex, true)
+                    }}
+                    data={this.props.event}
+                    itemWidth={width - 20}
+                    sliderWidth={width}
+                    renderItem={(item) => {
+                        return (
+                            <View style={{
+                                width: width - 50,
+                                shadowOpacity: 0.75,
+                                shadowRadius: 5,
+                                borderRadius: 8,
+                                shadowColor: 'transparent',
+                                shadowOffset: {height: 0, width: 0},
+                            }}>
+                                <Image
+                                    style={{borderRadius: 8,}}
+                                    resizeMode={'stretch'}
+                                    source={item.item.img_url}/>
+                                {item.item.status !== 'none' && <View style={{
+                                    position: 'absolute',
+                                    backgroundColor: item.item.status === 'Interested' ? Colors.white : 'green',
+                                    borderRadius: 4,
+                                    left: 8,
+                                    bottom: 24,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}>
+                                    <Text style={{
+                                        color: item.item.status === 'Interested' ? Colors.black : Colors.white,
+                                        paddingHorizontal: 12,
+                                        paddingVertical: 4,
+                                        fontSize:14
+                                    }}>{item.item.status}</Text>
+                                </View>}
+                            </View>
+                        )
+                    }}/>
+
+
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingHorizontal: 16,
+                }}>
+                    <Image source={Images.ic_menu} style={{width: 20, height: 20, tintColor: Colors.textSubTitle}}
+                           resizeMode={'contain'}/>
+                    <View style={{flexDirection: 'row'}}>
+                        <Image source={Images.ic_add}
+                               style={{width: 20, height: 20, tintColor: Colors.textSubTitle}}/>
+                        <Text style={{
+                            color: Colors.textSubTitle,
+                            paddingHorizontal: 4,
+                            fontWeight: 'bold',
+                            paddingBottom: 2,
+                            fontSize: 14,
+                        }}>Create Event</Text>
+
+
+                    </View>
+
+
+                </View>
+
 
             </View>
         )
@@ -46,11 +216,20 @@ class Events extends Component {
 
 }
 
+const mapStateToProps = state => ({
+    event: state.EventReducer.event
+});
+
+const Events = connect(mapStateToProps)(EventsScreen)
+
 export default Events;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: Colors.white,
+        flexDirection: 'column'
+
     }
 
 });

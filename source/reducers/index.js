@@ -3,9 +3,11 @@
  */
 import {combineReducers} from "redux";
 import {nav} from "./NavigationReducer";
+import EventReducer from './eventReducer'
 
 const AppReducer = combineReducers({
-    nav
+    nav,
+    EventReducer,
 });
 
 export default AppReducer;
