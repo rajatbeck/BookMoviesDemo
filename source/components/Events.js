@@ -185,7 +185,7 @@ class EventsScreen extends Component {
                     }}
                 />
                 <Carousel
-                    containerCustomStyle={{maxHeight}}
+                    containerCustomStyle={{maxHeight:maxHeight-10}}
                     // scrollInterpolator={stackScrollInterpolator}
                     // slideInterpolatedStyle={stackAnimatedStyles}
                     useScrollView={true}
@@ -213,8 +213,8 @@ class EventsScreen extends Component {
                             >
                                 <Transition shared={`image${item.id}`}>
                                     <Image
-                                        style={{borderRadius: 12, width: width - 50}}
-                                        resizeMode={'stretch'}
+                                        style={{borderRadius: 12, width: width - 50,height:maxHeight-50}}
+                                        resizeMode={'cover'}
                                         source={item.img_url}/>
                                 </Transition>
 
