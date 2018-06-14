@@ -175,7 +175,8 @@ class EventsScreen extends Component {
                                         fontWeight: 'bold',
                                         paddingBottom: 2,
                                         fontSize: 12,
-                                    }}>{item.item.event_location}</Text>
+                                    }}>{item.item.event_location}
+                                    </Text>
                                 </View>
 
 
@@ -199,9 +200,9 @@ class EventsScreen extends Component {
                         return (
                             <TouchableOpacity
                                 style={{
-                                    width: width - 50,
+                                    width: width - 100,
                                     shadowOpacity: 0.75,
-                                    shadowRadius: 5,
+                                    shadowRadius: 8,
                                     borderRadius: 8,
                                     shadowColor: 'transparent',
                                     shadowOffset: {height: 0, width: 0},
@@ -212,7 +213,7 @@ class EventsScreen extends Component {
                             >
                                 <Transition shared={`image${item.id}`}>
                                     <Image
-                                        // style={{borderRadius:8}}
+                                        style={{borderRadius: 12, width: width - 50}}
                                         resizeMode={'stretch'}
                                         source={item.img_url}/>
                                 </Transition>
@@ -275,7 +276,7 @@ const mapStateToProps = state => ({
     event: state.EventReducer.event
 });
 
-const Events = connect(mapStateToProps)(EventsScreen)
+const Events = connect(mapStateToProps)(EventsScreen);
 
 export default Events;
 

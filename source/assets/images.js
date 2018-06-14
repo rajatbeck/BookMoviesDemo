@@ -14,5 +14,6 @@ export default {
     ic_fourth: require('./images/fourth_slide.png'),
     ic_add:require('./images/round_add.png'),
     ic_menu:require('./images/round_menu.png'),
+    ic_forward_arrow:require('./images/round_arrow_forward.png')
 
 }
