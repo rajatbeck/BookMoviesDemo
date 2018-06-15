@@ -2,6 +2,7 @@
  * Created by rajatmareclbeck on 14/06/18.
  */
 import Images from "../assets/images";
+import {MODIFY_EVENT} from "../actions/EventsActions";
 const initialState = {
     event: [
         {
@@ -44,6 +45,8 @@ const initialState = {
 
 const eventReducer = (state = initialState, action) => {
     switch (action.type) {
+        case MODIFY_EVENT:
+            return {...state,event:action.events};
         default:
             return state;
     }

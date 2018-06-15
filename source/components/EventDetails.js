@@ -15,8 +15,9 @@ import Transition from "react-navigation-fluid-transitions/src/TransitionView";
 import Images from "../assets/images";
 import {connect} from "react-redux";
 import Colors from "../assets/Colors";
+import {modifyEvent} from "../actions/EventsActions";
 const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height-(Dimensions.get('window').height*1/4);
+const height = Dimensions.get('window').height - (Dimensions.get('window').height * 1 / 4);
 
 class EventsScreen extends Component {
 
@@ -26,11 +27,11 @@ class EventsScreen extends Component {
 
     constructor(props: Props) {
         super(props);
-
         this.state = {
             events: this.props.event.filter((eventItem) => eventItem.id === this.props.navigation.state.params.id)
 
         }
+        this.buttonAnimation = new Animated.Value(this.state.events[0].status === 'Going' ? 1 : 0);
 
 
     }
@@ -40,18 +41,70 @@ class EventsScreen extends Component {
 
     }
 
-    render() {
+    componentWillReceiveProps(nextProps: Props) {
+        this.setState({events: nextProps.event.filter((eventItem) => eventItem.id === this.props.navigation.state.params.id)})
+    }
 
-        const customTransition = transitionInfo => {
-            const { start, end, boundingbox, dimensions } = transitionInfo;
-            const { y, height } = boundingbox;
-            const distanceValue = dimensions.height - y + 25; // instead of: - y - 25;
-            const progress = transitionInfo.progress.interpolate({
+
+    _animate() {
+        Animated.timing(
+            this.buttonAnimation,
+            {
+                toValue: 1 - this.buttonAnimation._value,
+                duration: 200,
+                easing: Easing.linear
+            }
+        ).start(() => {
+        })
+    }
+
+    onGoingPressed = () => {
+        if (this.state.events[0].status !== 'Going') {
+            this._animate();
+            let events = this.props.event;
+            events = events.map((item) => {
+                    if (item.id === this.props.navigation.state.params.id) {
+                        item.status = 'Going';
+                        return item;
+                    } else {
+                        return item;
+                    }
+
+                }
+            );
+            this.props.modifyEvent(events);
+        }
+
+
+    };
+
+    render() {
+        myCustomTransitionFunction = (transitionInfo) => {
+            const {progress, start, end, dimensions} = transitionInfo;
+            const scaleInterpolation = progress.interpolate({
                 inputRange: [0, start, end, 1],
-                outputRange: [distanceValue, distanceValue, 0, 0],
+                outputRange: [88, 80, 1, 1],
             });
-            return { transform: [{ translateY: progress }] };
+            return {transform: [{scale: scaleInterpolation}]};
         };
+
+        let rotate = this.buttonAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '180deg']
+        });
+
+        let color = this.buttonAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['#545454', 'green']
+        });
+
+        let textRotation = this.buttonAnimation.interpolate({
+           inputRange:[0,1],
+            outputRange:['0deg','180deg'],
+        });
+
+        // const {modifyEvent} = this.props;
+
         return (
             <View style={styles.container}>
 
@@ -66,7 +119,8 @@ class EventsScreen extends Component {
                     alignItems: 'center',
                     justifyContent: 'space-between'
                 }}>
-                    <TouchableOpacity style={{flexDirection: 'row'}} activeOpacity={1} onPress={()=> this.props.navigation.goBack()}>
+                    <TouchableOpacity style={{flexDirection: 'row'}} activeOpacity={1}
+                                      onPress={() => this.props.navigation.goBack()}>
                         <Image
                             source={Images.ic_back_arrow}
                             style={{
@@ -97,9 +151,10 @@ class EventsScreen extends Component {
                 </View>
 
                 <Transition shared={`image${this.props.navigation.state.params.id}`}>
-                    <Image source={this.state.events[0].img_url} resizeMode={'cover'} style={{zIndex: 1,width,height}}/>
+                    <Image source={this.state.events[0].img_url} resizeMode={'cover'}
+                           style={{zIndex: 1, width, height}}/>
                 </Transition>
-                <Transition appear={customTransition} disappear="top" delay>
+                <Transition appear="bottom" disappear="top" delay={true}>
                     <View style={{backgroundColor: Colors.white, flex: 1}}>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 16}}>
                             <View style={{flexDirection: 'column'}}>
@@ -135,25 +190,39 @@ class EventsScreen extends Component {
                             </View>
                             {this.state.events[0].status !== 'none' &&
                             <TouchableOpacity
-                                style={{ alignItems: 'center',
+                                style={{
+                                    alignItems: 'center',
                                     justifyContent: 'center',
                                     alignSelf: 'center',
-                                    }}
-                                activeOpacity={1}>
-                                <Animated.View
-                                    style={{
-                                        borderRadius: 4,
-                                        backgroundColor: this.state.events[0].status === 'Interested' ? '#545454' : 'green',
 
-                                    }}>
-                                    <Text style={{
-                                        paddingHorizontal: 16,
-                                        paddingVertical: 8,
-                                        color: Colors.white,
+
+                                }}
+
+                                activeOpacity={1}
+                                onPress={this.onGoingPressed}
+                            >
+                                { <Animated.View
+                                    style={[{
+                                        borderRadius: 4,
+                                        height: 40,
+                                        width: 100,
+
+                                        backgroundColor: this.state.events[0].status === 'Interested' ? '#545454' : 'green',
+                                    }, {transform: [{rotateY: rotate}], backgroundColor: color}]}>
+                                    <Animated.Text style={[{
+                                        position: 'absolute',
+                                        top: 10,
+                                        bottom: 10,
+                                        left:0,
+                                        right:0,
                                         alignItems: 'center',
-                                        alignSelf: 'center'
-                                    }}>{this.state.events[0].status}</Text>
-                                </Animated.View>
+                                        justifyContent:'center',
+                                        alignSelf: 'center',
+                                        textAlign:'center',
+                                        color: Colors.white,
+                                    },{transform:[{rotateY:textRotation}]}]
+                                    }>{this.state.events[0].status}</Animated.Text>
+                                </Animated.View>}
                             </TouchableOpacity>}
                         </View>
                         <View
@@ -163,7 +232,7 @@ class EventsScreen extends Component {
                                 marginTop: 8,
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
-                                alignItems:'center',
+                                alignItems: 'center',
                                 paddingHorizontal: 16
 
                             }}>
@@ -198,7 +267,11 @@ const mapStateToProps = state => ({
     event: state.EventReducer.event
 });
 
-const EventsDetails = connect(mapStateToProps)(EventsScreen);
+const mapDispatchToProps = {
+    modifyEvent
+};
+
+const EventsDetails = connect(mapStateToProps, mapDispatchToProps)(EventsScreen);
 
 export default EventsDetails;
 
