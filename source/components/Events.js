@@ -9,7 +9,8 @@ import {
     Text,
     Image,
     FlatList,
-    Dimensions
+    Dimensions,
+    TouchableWithoutFeedback
 } from "react-native";
 import {NavigationActions} from "react-navigation";
 import Images from "../assets/images";
@@ -185,7 +186,7 @@ class EventsScreen extends Component {
                     }}
                 />
                 <Carousel
-                    containerCustomStyle={{maxHeight:maxHeight-10}}
+                    containerCustomStyle={{maxHeight: maxHeight - 10}}
                     // scrollInterpolator={stackScrollInterpolator}
                     // slideInterpolatedStyle={stackAnimatedStyles}
                     useScrollView={true}
@@ -198,44 +199,48 @@ class EventsScreen extends Component {
                     sliderWidth={width}
                     renderItem={({item, index}) => {
                         return (
-                            <TouchableOpacity
-                                style={{
-                                    width: width - 100,
-                                    shadowOpacity: 0.75,
-                                    shadowRadius: 8,
-                                    borderRadius: 8,
-                                    shadowColor: 'transparent',
-                                    shadowOffset: {height: 0, width: 0},
 
-                                }}
-                                activeOpacity={1}
-                                onPress={() => this._navigate(item)}
-                            >
-                                <Transition shared={`image${item.id}`}>
-                                    <Image
-                                        style={{borderRadius: 12, width: width - 50,height:maxHeight-50}}
-                                        resizeMode={'cover'}
-                                        source={item.img_url}/>
-                                </Transition>
+                            <TouchableWithoutFeedback onPress={()=>this._navigate(item)}>
+                                <View
+                                    style={{
+                                        width: width - 100,
+                                        shadowOpacity: 0.75,
+                                        shadowRadius: 8,
+                                        borderRadius: 8,
+                                        shadowColor: 'transparent',
+                                        shadowOffset: {height: 0, width: 0},
 
-                                {item.status !== 'none' && <View style={{
-                                    position: 'absolute',
-                                    backgroundColor: item.status === 'Interested' ? Colors.white : 'green',
-                                    borderRadius: 4,
-                                    left: 8,
-                                    bottom: 24,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    alignSelf: 'center'
-                                }}>
-                                    <Text style={{
-                                        color: item.status === 'Interested' ? Colors.black : Colors.white,
-                                        paddingHorizontal: 12,
-                                        paddingVertical: 4,
-                                        fontSize: 14
-                                    }}>{item.status}</Text>
-                                </View>}
-                            </TouchableOpacity>
+                                    }}
+
+
+                                    onPress={() => this._navigate(item)}
+                                >
+                                    <Transition shared={`image${item.id}`}>
+                                        <Image
+                                            style={{borderRadius: 12, width: width - 50, height: maxHeight - 50}}
+                                            resizeMode={'cover'}
+                                            source={item.img_url}/>
+                                    </Transition>
+
+                                    {item.status !== 'none' && <View style={{
+                                        position: 'absolute',
+                                        backgroundColor: item.status === 'Interested' ? Colors.white : 'green',
+                                        borderRadius: 4,
+                                        left: 8,
+                                        bottom: 24,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        alignSelf: 'center'
+                                    }}>
+                                        <Text style={{
+                                            color: item.status === 'Interested' ? Colors.black : Colors.white,
+                                            paddingHorizontal: 16,
+                                            paddingVertical: 8,
+                                            fontSize: 14
+                                        }}>{item.status}</Text>
+                                    </View>}
+                                </View>
+                            </TouchableWithoutFeedback>
                         )
                     }}/>
 

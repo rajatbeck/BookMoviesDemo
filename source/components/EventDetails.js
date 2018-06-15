@@ -16,6 +16,7 @@ import Images from "../assets/images";
 import {connect} from "react-redux";
 import Colors from "../assets/Colors";
 const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height-(Dimensions.get('window').height*1/4);
 
 class EventsScreen extends Component {
 
@@ -40,6 +41,17 @@ class EventsScreen extends Component {
     }
 
     render() {
+
+        const customTransition = transitionInfo => {
+            const { start, end, boundingbox, dimensions } = transitionInfo;
+            const { y, height } = boundingbox;
+            const distanceValue = dimensions.height - y + 25; // instead of: - y - 25;
+            const progress = transitionInfo.progress.interpolate({
+                inputRange: [0, start, end, 1],
+                outputRange: [distanceValue, distanceValue, 0, 0],
+            });
+            return { transform: [{ translateY: progress }] };
+        };
         return (
             <View style={styles.container}>
 
@@ -85,9 +97,9 @@ class EventsScreen extends Component {
                 </View>
 
                 <Transition shared={`image${this.props.navigation.state.params.id}`}>
-                    <Image source={this.state.events[0].img_url} style={{zIndex: 1}}/>
+                    <Image source={this.state.events[0].img_url} resizeMode={'cover'} style={{zIndex: 1,width,height}}/>
                 </Transition>
-                <Transition appear="bottom" disappear="top">
+                <Transition appear={customTransition} disappear="top" delay>
                     <View style={{backgroundColor: Colors.white, flex: 1}}>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 16}}>
                             <View style={{flexDirection: 'column'}}>
@@ -151,6 +163,7 @@ class EventsScreen extends Component {
                                 marginTop: 8,
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
+                                alignItems:'center',
                                 paddingHorizontal: 16
 
                             }}>
